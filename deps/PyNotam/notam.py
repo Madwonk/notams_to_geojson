@@ -1,7 +1,7 @@
-import timeutils
-import _abbr
+from PyNotam import timeutils
+from PyNotam import _abbr
 import re as _re
-import _parser
+from PyNotam import _parser
 from io import StringIO as _StringIO
 
 

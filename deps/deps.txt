@@ -1,0 +1,9 @@
+Dependencies are either managed by Pip or by git subtree
+(https://blog.developer.atlassian.com/the-power-of-git-subtree/).
+
+Pip:
+parsimonious (for PyNotam)
+timeutils (for PyNotam)
+
+Subtree:
+https://github.com/slavak/PyNotam
