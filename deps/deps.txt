@@ -1,9 +1,15 @@
-Dependencies are either managed by Pip or by git subtree
+Dependencies are either managed by Pip, apt, or by git subtree
 (https://blog.developer.atlassian.com/the-power-of-git-subtree/).
 
 Pip:
 parsimonious (for PyNotam)
-timeutils (for PyNotam)
+timeutils (for PyNotam, not sure if this is actually required?)
+
+Apt:
+feedparser (to handle NOTAM feeds from ourairports.com)
+geojson (to generate the output files)
+shapely (to generate circles for coords)
+pyproj (to convert between shapely and sane coord systems)
 
 Subtree:
 https://github.com/slavak/PyNotam

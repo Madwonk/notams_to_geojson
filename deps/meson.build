@@ -21,6 +21,10 @@ endif
 pip_modules = [
 	'parsimonious',
 	'timeutils',
+	'feedparser',
+	'geojson',
+	'shapely',
+	'pyproj',
 ]
 
 pymod.find_installation(modules: pip_modules)
