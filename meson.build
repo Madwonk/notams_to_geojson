@@ -26,7 +26,7 @@ desktopdir = join_paths(datadir, 'applications')
 
 # Since Python is interpreted, we use install_data pointed to the bindir
 # instead of "executable()" or some similar thing.
-install_data('notams_to_geojson', install_mode: 'rwxrw-rw-', install_dir: get_option('bindir'))
+install_data('notams_to_geojson', install_mode: 'rwxr-xr-x', install_dir: get_option('bindir'))
 
 subdir('deps')
 subdir('n2g')
