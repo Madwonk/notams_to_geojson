@@ -27,6 +27,7 @@ class Notam(object):
         self.fl_upper = None        # Upper vertical limit of NOTAM area of influence, expressed in flight levels (int).
         self.area = None            # Approximate circle whose radius encompasses the NOTAM's whole area of influence.
                                     #   This is a dict with keys: 'lat', 'long', 'radius' (str, str, int respectively).
+        self.poly = None            # This is an array of dicts with lat, longs defining an optional region
         self.location = None        # List of one or more ICAO location indicators, specifying the aerodrome or FIR
                                     #  in which the facility, airspace, or condition being reported on is located.
         self.valid_from = None      # The date and time at which the NOTAM comes into force (datetime.datetime).
@@ -39,6 +40,7 @@ class Notam(object):
         self.body = None            # Text of NOTAM; Plain-language Entry (using ICAO Abbreviations).
         self.limit_lower = None     # Textual specification of lower height limit of activities or restrictions.
         self.limit_upper = None     # Textual specification of upper height limits of activities or restrictions.
+        self.keyword = None         # Keywords stored from the E field
 
         # The following contain [start,end) indices for their corresponding NOTAM items (if such exist).
         # They can be used to index into Notam.full_text.

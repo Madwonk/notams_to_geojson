@@ -24,13 +24,15 @@ grammar = parsimonious.Grammar(r"""
     estimated = "EST"
     permanent = "PERM"
     d_clause = "D)" _ till_next_clause
-    e_clause = "E)" _ till_next_clause
+    e_clause = "E)" _ (!"AREA" keyword _)* ("AREA" (_ "ACT")? ":"? __? (area_of_effect_poly ("-" __? area_of_effect_poly)*))? till_next_clause
     f_clause = "F)" _ till_next_clause
     g_clause = "G)" _ till_next_clause
     _ = " "
     __ = (" " / "\n")+
     icao_id = ~r"[A-Z]{4}"
+    keyword = ~r"[A-Z]*"
     datetime = int2 int2 int2 int2 int2 # year month day hours minutes
+    area_of_effect_poly = ~r"(?P<lat>[0-9]{2,6}[NS])(?P<long>[0-9]{3,7}[EW])"
     int2 = ~r"[0-9]{2}"
     int3 = ~r"[0-9]{3}"
     till_next_clause = ~r".*?(?=(?:\)$)|(?:\s[A-Z]\)))"s
@@ -57,7 +59,13 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
         """Maps coded strings, where each character encodes a special meaning, into a corresponding decoded set
         according to the meanings dictionary (see examples of usage further below)"""
         codes = self.visit_simple_regex(*args)
-        return set([meanings[code] for code in codes])
+        out = []
+        for code in codes:
+            if code in meanings:
+                out.append(meanings[code])
+            else:
+                out.append({code:'unknown'})
+        return out
 
     def visit_intX(self, *args):
         v = self.visit_simple_regex(*args)
@@ -82,6 +90,7 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
     visit_icao_id = visit_simple_regex
     visit_notam_id = visit_simple_regex
     visit_notam_code = visit_simple_regex
+    visit_keyword = visit_simple_regex
 
     def visit_q_clause(self, node, visited_children):
         self.tgt.fir = visited_children[2]
@@ -114,7 +123,7 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
         self.tgt.area['radius'] = int(self.tgt.area['radius'])
 
     def visit_a_clause(self, node, _):
-        def _dfs_icao_id(n):
+        def _dfs_icao_id(n): # depth first search
             if n.expr_name == "icao_id": return [self.visit_simple_regex(n, [])]
             return sum([_dfs_icao_id(c) for c in n.children], []) # flatten list-of-lists
 
@@ -145,8 +154,14 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
         self.tgt.indices_item_d = (content_child.start, content_child.end)
 
     def visit_e_clause(self, node, visited_children):
-        self.tgt.body = visited_children[2]
-        content_child = node.children[2]
+        def _dfs_area_effect_poly(n):
+            if n.expr_name == "area_of_effect_poly": return n.match.groupdict()
+            return sum([_dfs_area_effect_poly(c) for c in n.children], [])
+
+        self.tgt.poly = _dfs_area_effect_poly(node)
+        print(self.tgt.poly)
+        self.tgt.body = visited_children[4]
+        content_child = node.children[4]
         self.tgt.indices_item_e = (content_child.start, content_child.end)
 
     def visit_f_clause(self, node, visited_children):
@@ -158,6 +173,9 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
         self.tgt.limit_upper = visited_children[2]
         content_child = node.children[2]
         self.tgt.indices_item_g = (content_child.start, content_child.end)
+
+    def visit_keyword(self, *args):
+        self.tgt.keyword = self.visit_simple_regex(*args)
 
     def visit_datetime(self, _, visited_children):
         dparts = visited_children

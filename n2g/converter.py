@@ -18,6 +18,7 @@ class n2g:
         polygons = []
         for n in self.notams:
             decoded = notam.Notam.from_str(n)
+            return decoded
             area = decoded.area
             lat = area["lat"]
             lon = area["long"]
@@ -29,6 +30,8 @@ class n2g:
 
             radius = area["radius"] # in nautical miles. WHAT THE FUCK Y U NO UZE METRIC
             radius *= 1852; # this is the really dumb simple way to get to meters
+            # I have now discovered that _some_ (not all) NOTAMS explicitly note that they are using km.
+            # this fucking format, I tell you
             local_azimuthal_projection = "+proj=aeqd +R=6371000 +units=m +lat_0={} +lon_0={}".format(lat, lon)
 
             wgs84_to_aeqd = partial(
