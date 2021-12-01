@@ -1,5 +1,6 @@
 import parsimonious
 from PyNotam import timeutils
+import numpy as np
 
 grammar = parsimonious.Grammar(r"""
     root = "(" header __ q_clause __ a_clause __ b_clause __ (c_clause __)? (d_clause __)? e_clause (__ f_clause __ g_clause)? ")"
@@ -156,7 +157,11 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
     def visit_e_clause(self, node, visited_children):
         def _dfs_area_effect_poly(n):
             if n.expr_name == "area_of_effect_poly": return n.match.groupdict()
-            return sum([_dfs_area_effect_poly(c) for c in n.children], [])
+            output = []
+            for c in n.children:
+                output = np.append(_dfs_area_effect_poly(c), output).tolist() # still not perfect, but this is way nicer than the puke that was here before
+
+            return output
 
         self.tgt.poly = _dfs_area_effect_poly(node)
         print(self.tgt.poly)
