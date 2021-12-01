@@ -18,7 +18,13 @@ class n2g:
         polygons = []
         for n in self.notams:
             decoded = notam.Notam.from_str(n)
-            return decoded
+
+            poly = []
+            if decoded.poly is not None:
+                for point in decoded.poly:
+                    poly.append([point["lat"], point["long"]])
+
+
             area = decoded.area
             lat = area["lat"]
             lon = area["long"]
@@ -56,6 +62,11 @@ class n2g:
 
             polygons.append(Feature(geometry=Polygon([circle]),
                 properties={"title":str(decoded.notam_id), "description":str(decoded.purpose)}))
+
+            if decoded.poly is not None:
+                polygons.append(Feature(geometry=Polygon([poly]),
+                    properties={"title":str(decoded.notam_id), "description":str(decoded.indices_item_e)}))
+
 
             # decoded.area is only determined from q-clause
             # there is often more detail in the e clause (search for "AREA")

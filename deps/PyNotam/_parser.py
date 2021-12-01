@@ -164,7 +164,6 @@ class NotamParseVisitor(parsimonious.NodeVisitor):
             return output
 
         self.tgt.poly = _dfs_area_effect_poly(node)
-        print(self.tgt.poly)
         self.tgt.body = visited_children[4]
         content_child = node.children[4]
         self.tgt.indices_item_e = (content_child.start, content_child.end)

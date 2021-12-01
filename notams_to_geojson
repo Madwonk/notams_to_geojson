@@ -25,5 +25,5 @@ if __name__ == "__main__":
             # the text processing removes the <> tags and replaces with parens (to match expectations)
     
     n2g = converter.n2g(notams)
-    #print(n2g.to_geojson())
-    n2g.to_geojson()
+    print(n2g.to_geojson())
+    #n2g.to_geojson()
