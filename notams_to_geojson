@@ -21,7 +21,6 @@ if __name__ == "__main__":
 #        nfeed = feedparser.parse(feed)
     for entry in nfeed.entries:
         notams.append("(" + entry.description[5:-6] + ")")
-        break
             # the text processing removes the <> tags and replaces with parens (to match expectations)
     
     n2g = converter.n2g(notams)
