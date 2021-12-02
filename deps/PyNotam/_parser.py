@@ -11,10 +11,10 @@ grammar = parsimonious.Grammar(r"""
     notam_id = ~r"[A-Z][0-9]{4}/[0-9]{2}"
     q_clause = "Q)" _ fir "/" notam_code "/" traffic_type "/" purpose "/" scope "/" lower_limit "/" upper_limit "/" area_of_effect
     fir = icao_id
-    notam_code = ~r"Q[A-Z]{4}"
+    notam_code = ~r"Q[A-Z]{4,5}"
     traffic_type = ~r"(?=[IVK]+)I?V?K?"
     purpose = ~r"(?=[NBOMK]+)N?B?O?M?K?"
-    scope = ~"(?=[AEWK]+)A?E?W?K?"
+    scope = ~"(?=[AEWK]+)(A?E?W?K?)+" # does this plus change or break/cut stuff off?
     lower_limit = int3
     upper_limit = int3
     area_of_effect = ~r"(?P<lat>[0-9]{4}[NS])(?P<long>[0-9]{5}[EW])(?P<radius>[0-9]{3})"

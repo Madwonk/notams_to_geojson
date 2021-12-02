@@ -8,17 +8,17 @@ from n2g import converter
 import feedparser
 
 if __name__ == "__main__":
-    f = open("/home/bmueller/Downloads/notams.rss", "r")
-    nfeed = feedparser.parse(f.read())
+    #f = open("/home/bmueller/Downloads/notams.rss", "r")
+    #nfeed = feedparser.parse(f.read())
 
 # TODO: read these in from a config file defined/deployed by meson. Add cli args
-#    feeds = [
-#        "https://ourairports.com/airports/ULMM/notams.rss"
-#    ]
+    feeds = [
+        "https://ourairports.com/airports/ULMM/notams.rss"
+    ]
 
     notams = []
-#    for feed in feeds:
-#        nfeed = feedparser.parse(feed)
+    for feed in feeds:
+        nfeed = feedparser.parse(feed)
     for entry in nfeed.entries:
         notams.append("(" + entry.description[5:-6] + ")")
             # the text processing removes the <> tags and replaces with parens (to match expectations)
